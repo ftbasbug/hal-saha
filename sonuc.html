@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Saha ve Saat Seçimi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      position: relative;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .saha-secim {
+      border: 1px solid #ccc;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+    }
+
+    .saha-option {
+      margin: 8px 0;
+      padding: 8px;
+      border: 1px solid #aaa;
+      cursor: pointer;
+      border-radius: 4px;
+      background-color: #f2f2f2;
+    }
+
+    .saha-option.selected {
+      background-color: #333;
+      color: white;
+    }
+
+    .saat-container {
+      margin-top: 20px;
+    }
+
+    .saat-secilen {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    select {
+      padding: 8px;
+      margin-top: 8px;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .ilerle-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="saha-secim">
+    <h2>Saha Seçimi</h2>
+    <div class="saha-option">ARENA77</div>
+    <div class="saha-option">EFSANE77</div>
+    <div class="saha-option">FATİH</div>
+    <div class="saha-option">90+4</div>
+    <div class="saha-option">LA LİGA</div>
+    <div class="saha-option">KAPTAN</div>
+    <div class="saha-option">ÖNCÜ</div>
+
+    <div class="saat-container">
+      <label for="saatSecimi">Saat Seçimi:</label>
+      <select id="saatSecimi">
+        <option value="">Lütfen saat seçiniz</option>
+      </select>
+      <div class="saat-secilen" id="saatGoster"></div>
+    </div>
+  </div>
+
+  <button class="ilerle-btn" id="ilerleSonuc">İlerle</button>
+
+  <script>
+    // Saatleri doldur
+    const saatSecimi = document.getElementById('saatSecimi');
+    for (let i = 1; i <= 24; i++) {
+      const saat = i.toString().padStart(2, '0') + ":00";
+      const option = document.createElement('option');
+      option.value = saat;
+      option.textContent = saat;
+      saatSecimi.appendChild(option);
+    }
+
+    let secilenSaha = "";
+    const sahaOptions = document.querySelectorAll('.saha-option');
+    sahaOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        sahaOptions.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        secilenSaha = option.textContent;
+        localStorage.setItem("saha", secilenSaha);
+      });
+    });
+
+    saatSecimi.addEventListener('change', () => {
+      const secim = saatSecimi.value;
+      const goster = document.getElementById('saatGoster');
+      if (secim) {
+        goster.textContent = `Seçilen Saat: ${secim}`;
+        localStorage.setItem("saat", secim);
+      } else {
+        goster.textContent = '';
+      }
+    });
+
+    // Sonuç sayfasına geçiş
+    document.getElementById("ilerleSonuc").addEventListener("click", () => {
+      window.location.href = "sonuc.html";
+    });
+  </script>
+
+</body>
+</html>
