@@ -29,8 +29,30 @@
       padding: 20px;
       border: 2px solid #333;
       border-radius: 8px;
-      text-align: center;
       background-color: #f2f2f2;
+      text-align: center;
+    }
+
+    .players {
+      margin: 10px 0;
+      min-height: 50px;
+      border: 1px dashed #999;
+      padding: 10px;
+      background-color: #fff;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
@@ -38,9 +60,18 @@
   <div class="container">
     <div class="header">Hoşgeldiniz</div>
     <div class="teams">
-      <div class="team-box">Takım A</div>
-      <div class="team-box">Takım B</div>
+      <div class="team-box">
+        <div>Takım A</div>
+        <div class="players" id="players-a"></div>
+        <button onclick="addPlayer('a')">Kişi Ekle</button>
+      </div>
+      <div class="team-box">
+        <div>Takım B</div>
+        <div class="players" id="players-b"></div>
+        <button onclick="addPlayer('b')">Kişi Ekle</button>
+      </div>
     </div>
   </div>
-</body>
-</html>
+
+  <script>
+    function addPla
