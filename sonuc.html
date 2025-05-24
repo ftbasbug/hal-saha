@@ -73,6 +73,7 @@
         <!-- JS ile doldurulacak -->
       </div>
     </div>
+
     <div class="saha-saat-container">
       <h2>Seçilen Halı Saha ve Saat</h2>
       <p><strong>Saha:</strong> <span id="saha"></span></p>
@@ -81,11 +82,11 @@
   </div>
 
   <script>
-    // Oyuncuları ve mevkilerini getir
-    const oyuncularListesi = JSON.parse(localStorage.getItem("oyuncularMevki")) || [];
+    // Oyuncular ve mevkiler
+    const oyuncularMevki = JSON.parse(localStorage.getItem("oyuncularMevki")) || [];
     const oyuncularDiv = document.getElementById("oyuncularListesi");
 
-    oyuncularListesi.forEach((oyuncu, index) => {
+    oyuncularMevki.forEach((oyuncu, index) => {
       const div = document.createElement("div");
       div.className = "oyuncu";
       div.textContent = `${index + 1}. ${oyuncu.isim}`;
@@ -96,7 +97,7 @@
       oyuncularDiv.appendChild(div);
     });
 
-    // Saha ve saat bilgilerini göster
+    // Saha ve saat bilgisi
     document.getElementById("saha").textContent = localStorage.getItem("saha") || "-";
     document.getElementById("saat").textContent = localStorage.getItem("saat") || "-";
   </script>
