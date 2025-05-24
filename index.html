@@ -76,7 +76,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 0;
+      padding: 8px;
     }
 
     .position-buttons {
@@ -99,6 +100,17 @@
       background-color: #333;
       color: #fff;
     }
+
+    /* Zebra stil (sıra sıra farklı arka plan renkleri) */
+    .zebra div:nth-child(odd),
+    .zebra .position-item:nth-child(odd) {
+      background-color: #f0f0f0;
+    }
+
+    .zebra div:nth-child(even),
+    .zebra .position-item:nth-child(even) {
+      background-color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -107,7 +119,7 @@
   <div class="container">
     <div class="team">
       <strong>Takım A</strong>
-      <div class="player-list" id="players-a"></div>
+      <div class="player-list zebra" id="players-a"></div>
       <div class="input-wrapper">
         <input type="text" id="input-a" placeholder="İsim ekle veya sil (-numara)">
         <button onclick="handleInput('a')">Kişi Ekle</button>
@@ -116,7 +128,7 @@
 
     <div class="team">
       <strong>Takım B</strong>
-      <div class="player-list" id="players-b"></div>
+      <div class="player-list zebra" id="players-b"></div>
       <div class="input-wrapper">
         <input type="text" id="input-b" placeholder="İsim ekle veya sil (-numara)">
         <button onclick="handleInput('b')">Kişi Ekle</button>
@@ -127,12 +139,12 @@
   <div class="positions">
     <h2>Mevki Seç</h2>
 
-    <div class="position-box">
+    <div class="position-box zebra">
       <strong>Takım A</strong>
       <div id="positions-a"></div>
     </div>
 
-    <div class="position-box">
+    <div class="position-box zebra">
       <strong>Takım B</strong>
       <div id="positions-b"></div>
     </div>
@@ -203,7 +215,7 @@
       });
     }
 
-    // 🎯 ENTER tuşuyla otomatik ekleme/silme
+    // Enter tuşuyla otomatik işlem
     ['a', 'b'].forEach(team => {
       document.getElementById(`input-${team}`).addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
