@@ -80,7 +80,7 @@
         <div class="players" id="players-a"></div>
         <button onclick="showInput('a')">Kişi Ekle</button>
         <div class="name-input" id="input-wrapper-a">
-          <input type="text" id="input-a" placeholder="Oyuncu ismini yazın">
+          <input type="text" id="input-a" placeholder="İsim ekle veya sil (-numara)">
         </div>
       </div>
 
@@ -90,14 +90,14 @@
         <div class="players" id="players-b"></div>
         <button onclick="showInput('b')">Kişi Ekle</button>
         <div class="name-input" id="input-wrapper-b">
-          <input type="text" id="input-b" placeholder="Oyuncu ismini yazın">
+          <input type="text" id="input-b" placeholder="İsim ekle veya sil (-numara)">
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const playerCounts = { a: 0, b: 0 };
+    const players = { a: [], b: [] };
 
     function showInput(team) {
       const inputWrapper = document.getElementById(`input-wrapper-${team}`);
@@ -107,17 +107,39 @@
 
       inputField.onkeydown = function (e) {
         if (e.key === "Enter") {
-          const name = inputField.value.trim();
-          if (name) {
-            playerCounts[team]++;
-            const playerList = document.getElementById(`players-${team}`);
-            const playerEntry = document.createElement("div");
-            playerEntry.textContent = `${playerCounts[team]}. ${name}`;
-            playerList.appendChild(playerEntry);
-            inputField.value = "";
+          const value = inputField.value.trim();
+          inputField.value = "";
+
+          if (!value) return;
+
+          const playerList = document.getElementById(`players-${team}`);
+
+          if (value.startsWith("-")) {
+            // Silme işlemi
+            const indexToRemove = parseInt(value.slice(1)) - 1;
+            if (!isNaN(indexToRemove) && indexToRemove >= 0 && indexToRemove < players[team].length) {
+              players[team].splice(indexToRemove, 1);
+              updatePlayerList(team);
+            } else {
+              alert("Geçersiz sıra numarası!");
+            }
+          } else {
+            // Ekleme işlemi
+            players[team].push(value);
+            updatePlayerList(team);
           }
         }
       };
+    }
+
+    function updatePlayerList(team) {
+      const playerList = document.getElementById(`players-${team}`);
+      playerList.innerHTML = "";
+      players[team].forEach((name, index) => {
+        const playerEntry = document.createElement("div");
+        playerEntry.textContent = `${index + 1}. ${name}`;
+        playerList.appendChild(playerEntry);
+      });
     }
   </script>
 </body>
