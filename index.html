@@ -21,7 +21,8 @@
 
     .teams {
       display: flex;
-      gap: 20px;
+      gap: 50px;
+      margin-bottom: 40px;
     }
 
     .team-box {
@@ -68,11 +69,58 @@
       font-size: 14px;
       box-sizing: border-box;
     }
+
+    .position-selector {
+      margin-bottom: 30px;
+    }
+
+    .position-box {
+      border: 1px solid #999;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .position-player {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .position-label {
+      width: 150px;
+    }
+
+    .position-options {
+      display: flex;
+      gap: 5px;
+    }
+
+    .position-button {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border: 1px solid #555;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      background-color: #ddd;
+      font-weight: bold;
+    }
+
+    .position-button.active {
+      background-color: #555;
+      color: white;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">Hoşgeldiniz</div>
+
     <div class="teams">
       <!-- Takım A -->
       <div class="team-box">
@@ -94,53 +142,17 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    const players = { a: [], b: [] };
+    <!-- Mevki Seçimi Alanı -->
+    <div class="position-selector">
+      <div class="header">Mevki Seç</div>
 
-    function showInput(team) {
-      const inputWrapper = document.getElementById(`input-wrapper-${team}`);
-      const inputField = document.getElementById(`input-${team}`);
-      inputWrapper.style.display = "block";
-      inputField.focus();
+      <!-- Takım A Mevki -->
+      <div class="position-box" id="position-box-a">
+        <strong>Takım A</strong>
+        <div id="positions-a"></div>
+      </div>
 
-      inputField.onkeydown = function (e) {
-        if (e.key === "Enter") {
-          const value = inputField.value.trim();
-          inputField.value = "";
-
-          if (!value) return;
-
-          const playerList = document.getElementById(`players-${team}`);
-
-          if (value.startsWith("-")) {
-            // Silme işlemi
-            const indexToRemove = parseInt(value.slice(1)) - 1;
-            if (!isNaN(indexToRemove) && indexToRemove >= 0 && indexToRemove < players[team].length) {
-              players[team].splice(indexToRemove, 1);
-              updatePlayerList(team);
-            } else {
-              alert("Geçersiz sıra numarası!");
-            }
-          } else {
-            // Ekleme işlemi
-            players[team].push(value);
-            updatePlayerList(team);
-          }
-        }
-      };
-    }
-
-    function updatePlayerList(team) {
-      const playerList = document.getElementById(`players-${team}`);
-      playerList.innerHTML = "";
-      players[team].forEach((name, index) => {
-        const playerEntry = document.createElement("div");
-        playerEntry.textContent = `${index + 1}. ${name}`;
-        playerList.appendChild(playerEntry);
-      });
-    }
-  </script>
-</body>
-</html>
+      <!-- Takım B Mevki -->
+      <div class="position-box" id="position-box-b">
+        <
