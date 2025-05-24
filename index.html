@@ -5,141 +5,203 @@
   <title>Halısaha Maçı</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h2 {
+      margin-bottom: 10px;
     }
 
     .container {
-      padding: 20px;
-    }
-
-    .header {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .teams {
       display: flex;
       gap: 50px;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
     }
 
-    .team-box {
-      flex: 1;
-      padding: 20px;
-      border: 2px solid #333;
-      border-radius: 8px;
+    .team {
       background-color: #fff;
-      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
     }
 
-    .players {
-      margin: 10px 0;
-      min-height: 60px;
+    .player-list {
+      margin-top: 10px;
       border: 1px dashed #999;
+      min-height: 60px;
       padding: 10px;
-      background-color: #fefefe;
-      text-align: left;
+      background-color: #fafafa;
     }
 
-    .name-input {
-      display: none;
+    .input-wrapper {
       margin-top: 10px;
     }
 
     input[type="text"] {
       padding: 8px;
       width: 100%;
-      font-size: 14px;
       box-sizing: border-box;
     }
 
     button {
+      margin-top: 10px;
       padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
       background-color: #007bff;
       color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     button:hover {
       background-color: #0056b3;
     }
 
-    .position-section {
-      margin-top: 20px;
-    }
-
-    .position-header {
-      font-size: 20px;
-      margin-bottom: 10px;
+    .positions {
+      margin-top: 50px;
     }
 
     .position-box {
+      margin-bottom: 30px;
       background-color: #fff;
-      padding: 15px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
     }
 
-    .position-player {
+    .position-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
     }
 
-    .position-label {
-      flex: 1;
-    }
-
-    .position-options {
+    .position-buttons {
       display: flex;
       gap: 5px;
     }
 
     .position-button {
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
       background-color: #e0e0e0;
-      user-select: none;
-      transition: background-color 0.2s;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
     }
 
     .position-button.active {
       background-color: #333;
-      color: white;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Mevki Seçimi -->
-    <div class="position-header">Mevki Seç</div>
 
-    <!-- Takım A Mevki Kutusu -->
-    <div class="position-box" id="mevki-a">
+  <h2>Hoşgeldiniz</h2>
+  <div class="container">
+    <div class="team">
+      <strong>Takım A</strong>
+      <div class="player-list" id="players-a"></div>
+      <div class="input-wrapper">
+        <input type="text" id="input-a" placeholder="İsim ekle veya sil (-numara)">
+        <button onclick="handleInput('a')">Kişi Ekle</button>
+      </div>
+    </div>
+
+    <div class="team">
+      <strong>Takım B</strong>
+      <div class="player-list" id="players-b"></div>
+      <div class="input-wrapper">
+        <input type="text" id="input-b" placeholder="İsim ekle veya sil (-numara)">
+        <button onclick="handleInput('b')">Kişi Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="positions">
+    <h2>Mevki Seç</h2>
+
+    <div class="position-box">
       <strong>Takım A</strong>
       <div id="positions-a"></div>
     </div>
 
-    <!-- Takım B Mevki Kutusu -->
-    <div class="position-box" id="mevki-b">
+    <div class="position-box">
       <strong>Takım B</strong>
       <div id="positions-b"></div>
     </div>
+  </div>
 
-    <!-- Oyuncu Ekleme Alanı -->
-    <div class="header">Hoşgeldiniz</div>
-    <div class="
+  <script>
+    const players = { a: [], b: [] };
+
+    function handleInput(team) {
+      const input = document.getElementById(`input-${team}`);
+      const value = input.value.trim();
+      input.value = '';
+      if (!value) return;
+
+      if (value.startsWith("-")) {
+        const index = parseInt(value.slice(1)) - 1;
+        if (!isNaN(index) && index >= 0 && index < players[team].length) {
+          players[team].splice(index, 1);
+        }
+      } else {
+        players[team].push(value);
+      }
+
+      updatePlayerList(team);
+      updatePositionList(team);
+    }
+
+    function updatePlayerList(team) {
+      const container = document.getElementById(`players-${team}`);
+      container.innerHTML = '';
+      players[team].forEach((name, i) => {
+        const div = document.createElement('div');
+        div.textContent = `${i + 1}. ${name}`;
+        container.appendChild(div);
+      });
+    }
+
+    function updatePositionList(team) {
+      const container = document.getElementById(`positions-${team}`);
+      container.innerHTML = '';
+
+      players[team].forEach((name, index) => {
+        const row = document.createElement('div');
+        row.className = 'position-item';
+
+        const label = document.createElement('span');
+        label.textContent = `${index + 1}. ${name}`;
+
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'position-buttons';
+
+        ['K', 'D', 'O', 'F'].forEach(pos => {
+          const btn = document.createElement('div');
+          btn.className = 'position-button';
+          btn.textContent = pos;
+
+          btn.addEventListener('click', () => {
+            Array.from(buttonsDiv.children).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+
+          buttonsDiv.appendChild(btn);
+        });
+
+        row.appendChild(label);
+        row.appendChild(buttonsDiv);
+        container.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>
