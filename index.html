@@ -35,10 +35,11 @@
 
     .players {
       margin: 10px 0;
-      min-height: 50px;
+      min-height: 60px;
       border: 1px dashed #999;
       padding: 10px;
       background-color: #fff;
+      text-align: left;
     }
 
     button {
@@ -49,10 +50,23 @@
       border: none;
       background-color: #007bff;
       color: white;
+      margin-top: 5px;
     }
 
     button:hover {
       background-color: #0056b3;
+    }
+
+    .name-input {
+      display: none;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 100%;
+      font-size: 14px;
+      box-sizing: border-box;
     }
   </style>
 </head>
@@ -60,18 +74,51 @@
   <div class="container">
     <div class="header">Hoşgeldiniz</div>
     <div class="teams">
+      <!-- Takım A -->
       <div class="team-box">
         <div>Takım A</div>
         <div class="players" id="players-a"></div>
-        <button onclick="addPlayer('a')">Kişi Ekle</button>
+        <button onclick="showInput('a')">Kişi Ekle</button>
+        <div class="name-input" id="input-wrapper-a">
+          <input type="text" id="input-a" placeholder="Oyuncu ismini yazın">
+        </div>
       </div>
+
+      <!-- Takım B -->
       <div class="team-box">
         <div>Takım B</div>
         <div class="players" id="players-b"></div>
-        <button onclick="addPlayer('b')">Kişi Ekle</button>
+        <button onclick="showInput('b')">Kişi Ekle</button>
+        <div class="name-input" id="input-wrapper-b">
+          <input type="text" id="input-b" placeholder="Oyuncu ismini yazın">
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    function addPla
+    const playerCounts = { a: 0, b: 0 };
+
+    function showInput(team) {
+      const inputWrapper = document.getElementById(`input-wrapper-${team}`);
+      const inputField = document.getElementById(`input-${team}`);
+      inputWrapper.style.display = "block";
+      inputField.focus();
+
+      inputField.onkeydown = function (e) {
+        if (e.key === "Enter") {
+          const name = inputField.value.trim();
+          if (name) {
+            playerCounts[team]++;
+            const playerList = document.getElementById(`players-${team}`);
+            const playerEntry = document.createElement("div");
+            playerEntry.textContent = `${playerCounts[team]}. ${name}`;
+            playerList.appendChild(playerEntry);
+            inputField.value = "";
+          }
+        }
+      };
+    }
+  </script>
+</body>
+</html>
