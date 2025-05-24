@@ -90,18 +90,18 @@
       height: 30px;
       line-height: 30px;
       text-align: center;
-      background-color: #e0e0e0;
+      background-color: #e0e0e0 !important;
       border-radius: 4px;
       cursor: pointer;
       font-weight: bold;
     }
 
     .position-button.active {
-      background-color: #333;
+      background-color: #333 !important;
       color: #fff;
     }
 
-    /* Zebra stil (sıra sıra farklı arka plan renkleri) */
+    /* Zebra stil: sadece satıra uygulanır */
     .zebra div:nth-child(odd),
     .zebra .position-item:nth-child(odd) {
       background-color: #f0f0f0;
@@ -215,7 +215,6 @@
       });
     }
 
-    // Enter tuşuyla otomatik işlem
     ['a', 'b'].forEach(team => {
       document.getElementById(`input-${team}`).addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
