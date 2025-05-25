@@ -6,150 +6,128 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      position: relative;
+      padding: 30px;
     }
 
     h1 {
-      font-size: 36px;
+      font-size: 28px;
       font-weight: bold;
+    }
+
+    h2 {
+      margin-top: 25px;
     }
 
     .takim-container {
       display: flex;
       gap: 40px;
-      margin-top: 30px;
+      margin-top: 20px;
     }
 
     .takim {
-      border: 2px solid #444;
-      padding: 20px;
-      border-radius: 10px;
-      width: 350px;
+      width: 45%;
     }
 
-    .takim h2 {
-      margin-bottom: 10px;
-    }
-
-    .oyuncular {
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 10px;
     }
 
     .oyuncu-satir {
       display: flex;
+      justify-content: space-between;
       align-items: center;
       padding: 8px;
-    }
-
-    .oyuncu-satir:nth-child(even) {
-      background-color: #f0f0f0;
-    }
-
-    .oyuncu-satir:nth-child(odd) {
-      background-color: #dcdcdc;
+      background-color: #f9f9f9;
+      margin-top: 5px;
     }
 
     .oyuncu-isim {
-      flex: 1;
+      font-weight: bold;
     }
 
     .mevki-secimi {
       display: flex;
-      gap: 4px;
+      gap: 5px;
     }
 
     .mevki-btn {
-      width: 28px;
-      height: 28px;
-      text-align: center;
-      line-height: 28px;
-      border: 1px solid #888;
+      border: 1px solid #999;
+      padding: 3px 8px;
       cursor: pointer;
-      background-color: #fff;
-      font-weight: bold;
     }
 
-    .mevki-btn.secili {
-      background-color: #444;
-      color: #fff;
+    .secili {
+      background-color: #333;
+      color: white;
     }
 
-    .oyuncu-ekle {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-
-    .ilerle {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      background-color: #008CBA;
+    .ilerle-btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #333;
       color: white;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
+      float: right;
     }
   </style>
 </head>
 <body>
+
   <h1>HOŞGELDİNİZ</h1>
 
   <div class="takim-container">
-    <!-- TAKIM A -->
     <div class="takim">
       <h2>Takım A</h2>
-      <div class="oyuncular" id="takimAListesi"></div>
-      <input type="text" id="takimAInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
+      <div id="takimAListesi"></div>
+      <input type="text" id="takimAInput" placeholder="Oyuncu ekle / sil (-numara)">
     </div>
 
-    <!-- TAKIM B -->
     <div class="takim">
       <h2>Takım B</h2>
-      <div class="oyuncular" id="takimBListesi"></div>
-      <input type="text" id="takimBInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
+      <div id="takimBListesi"></div>
+      <input type="text" id="takimBInput" placeholder="Oyuncu ekle / sil (-numara)">
     </div>
   </div>
 
-  <button class="ilerle" onclick="ilerle()">İlerle</button>
+  <button class="ilerle-btn" onclick="ilerle()">İlerle</button>
 
   <script>
-    function setupTakim(inputId, listId) {
+    let oyuncularA = [];
+    let oyuncularB = [];
+
+    function setupTakim(inputId, listId, oyuncular) {
       const input = document.getElementById(inputId);
       const listContainer = document.getElementById(listId);
-      let oyuncular = [];
 
       function guncelleListe() {
         listContainer.innerHTML = '';
-        oyuncular.forEach((isim, index) => {
+        oyuncular.forEach((oyuncu, index) => {
           const satir = document.createElement('div');
           satir.className = 'oyuncu-satir';
 
-          const isimEl = document.createElement('div');
-          isimEl.className = 'oyuncu-isim';
-          isimEl.textContent = `${index + 1}. ${isim.isim}`;
-          satir.appendChild(isimEl);
+          const isimDiv = document.createElement('div');
+          isimDiv.className = 'oyuncu-isim';
+          isimDiv.textContent = `${index + 1}. ${oyuncu.isim}`;
+          satir.appendChild(isimDiv);
 
           const mevkiDiv = document.createElement('div');
           mevkiDiv.className = 'mevki-secimi';
 
-          ['K', 'D', 'O', 'F'].forEach((harf) => {
+          ['K', 'D', 'O', 'F'].forEach(harf => {
             const btn = document.createElement('div');
             btn.className = 'mevki-btn';
             btn.textContent = harf;
 
-            if (isim.mevki === harf) {
+            if (oyuncu.mevki === harf) {
               btn.classList.add('secili');
             }
 
             btn.addEventListener('click', () => {
-              isim.mevki = harf;
-              guncelleListe(); // tekrar çiz
+              oyuncu.mevki = harf;
+              guncelleListe();
             });
 
             mevkiDiv.appendChild(btn);
@@ -160,19 +138,19 @@
         });
       }
 
-      input.addEventListener('keydown', function (e) {
+      input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
-          const girilen = input.value.trim();
-          if (girilen === '') return;
+          const giris = input.value.trim();
+          if (giris === '') return;
 
-          if (girilen.startsWith('-')) {
-            const silIndex = parseInt(girilen.slice(1)) - 1;
-            if (!isNaN(silIndex) && silIndex >= 0 && silIndex < oyuncular.length) {
-              oyuncular.splice(silIndex, 1);
+          if (giris.startsWith('-')) {
+            const index = parseInt(giris.slice(1)) - 1;
+            if (!isNaN(index) && index >= 0 && index < oyuncular.length) {
+              oyuncular.splice(index, 1);
               guncelleListe();
             }
           } else {
-            oyuncular.push({ isim: girilen, mevki: null });
+            oyuncular.push({ isim: giris, mevki: null });
             guncelleListe();
           }
 
@@ -181,12 +159,15 @@
       });
     }
 
-    setupTakim('takimAInput', 'takimAListesi');
-    setupTakim('takimBInput', 'takimBListesi');
+    setupTakim('takimAInput', 'takimAListesi', oyuncularA);
+    setupTakim('takimBInput', 'takimBListesi', oyuncularB);
 
     function ilerle() {
-      window.location.href = "mac-bilgileri.html"; // 2. sayfaya yönlendirme
+      localStorage.setItem('takimA', JSON.stringify(oyuncularA));
+      localStorage.setItem('takimB', JSON.stringify(oyuncularB));
+      window.location.href = "mac-bilgileri.html";
     }
   </script>
+
 </body>
 </html>
