@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Maç Bilgileri</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .secenekler {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 400px;
+    }
+
+    .kutucuk {
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    .halisaha-listesi {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .halisaha-btn {
+      padding: 10px;
+      border: 1px solid #999;
+      cursor: pointer;
+      border-radius: 6px;
+      background-color: #f5f5f5;
+    }
+
+    .halisaha-btn.secili {
+      background-color: #444;
+      color: white;
+      font-weight: bold;
+    }
+
+    input[type="date"], select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+    }
+
+    input[type="date"]::placeholder {
+      color: #999;
+    }
+
+    .ilerle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Maç Bilgilerini Seç</h1>
+
+  <div class="secenekler">
+
+    <!-- Halısaha Seçimi -->
+    <div class="kutucuk">
+      <h3>Halısaha Seçimi</h3>
+      <div class="halisaha-listesi" id="halisahaListesi">
+        <!-- JS ile eklenecek -->
+      </div>
+    </div>
+
+    <!-- Tarih Seçimi -->
+    <div class="kutucuk">
+      <h3>Tarih Seçimi</h3>
+      <input type="date" id="tarihSecimi" placeholder="Lütfen bir tarih seçin">
+    </div>
+
+    <!-- Saat Seçimi -->
+    <div class="kutucuk">
+      <h3>Saat Seçimi</h3>
+      <select id="saatSecimi">
+        <option value="">Lütfen saat seçiniz</option>
+      </select>
+    </div>
+
+  </div>
+
+  <button class="ilerle" onclick="ilerle()">İlerle</button>
+
+  <script>
+    // Halısaha Listesi
+    const halisahalar = ["arena77", "efsane77", "fatih", "90+4", "kaptan", "la liga", "öncü"];
+    const halisahaListesi = document.getElementById("halisahaListesi");
+    let secilenHalisaha = null;
+
+    halisahalar.forEach((isim) => {
+      const btn = document.createElement("div");
+      btn.className = "halisaha-btn";
+      btn.textContent = isim;
+
+      btn.addEventListener("click", () => {
+        secilenHalisaha = isim;
+        document.querySelectorAll(".halisaha-btn").forEach(b => b.classList.remove("secili"));
+        btn.classList.add("secili");
+      });
+
+      halisahaListesi.appendChild(btn);
+    });
+
+    // Saat Seçimi Listesi
+    const saatSecimi = document.getElementById("saatSecimi");
+    for (let i = 1; i <= 24; i++) {
+      const saat = i.toString().padStart(2, '0') + ":00";
+      const opt = document.createElement("option");
+      opt.value = saat;
+      opt.textContent = saat;
+      saatSecimi.appendChild(opt);
+    }
+
+    function ilerle() {
+      const tarih = document.getElementById("tarihSecimi").value;
+      const saat = document.getElementById("saatSecimi").value;
+
+      if (!secilenHalisaha || !tarih || !saat) {
+        alert("Lütfen tüm seçimleri tamamlayın!");
+        return;
+      }
+
+      // Gerçek uygulamada veri saklanabilir veya yönlendirme yapılabilir
+      alert("3. sayfaya geçiliyor...\nHalısaha: " + secilenHalisaha + "\nTarih: " + tarih + "\nSaat: " + saat);
+      // Örnek yönlendirme:
+      // window.location.href = "sayfa3.html";
+    }
+  </script>
+</body>
+</html>
 
