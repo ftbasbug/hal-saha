@@ -7,151 +7,104 @@
     body {
       font-family: Arial, sans-serif;
       padding: 30px;
-      position: relative;
     }
 
     h1 {
       font-size: 28px;
+      font-weight: bold;
       margin-bottom: 20px;
     }
 
-    .secenekler {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      max-width: 400px;
+    .halisaha-secim, .zaman-secim {
+      margin-bottom: 30px;
     }
 
-    .kutucuk {
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      padding: 15px;
-    }
-
-    .halisaha-listesi {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .halisaha-btn {
+    .halisaha-item {
       padding: 10px;
-      border: 1px solid #999;
+      border: 1px solid #ccc;
+      margin-bottom: 5px;
       cursor: pointer;
-      border-radius: 6px;
-      background-color: #f5f5f5;
     }
 
-    .halisaha-btn.secili {
-      background-color: #444;
+    .halisaha-item.selected {
+      background-color: #333;
       color: white;
       font-weight: bold;
     }
 
-    input[type="date"], select {
+    select, input[type="date"] {
       width: 100%;
       padding: 10px;
-      font-size: 16px;
-      border: 1px solid #aaa;
-      border-radius: 6px;
+      margin-top: 10px;
     }
 
-    input[type="date"]::placeholder {
-      color: #999;
-    }
-
-    .ilerle {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      background-color: #008CBA;
+    .ilerle-btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #333;
       color: white;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
+      float: right;
     }
   </style>
 </head>
 <body>
 
-  <h1>Maç Bilgilerini Seç</h1>
+  <h1>Maç Bilgileri</h1>
 
-  <div class="secenekler">
-
-    <!-- Halısaha Seçimi -->
-    <div class="kutucuk">
-      <h3>Halısaha Seçimi</h3>
-      <div class="halisaha-listesi" id="halisahaListesi">
-        <!-- JS ile eklenecek -->
-      </div>
-    </div>
-
-    <!-- Tarih Seçimi -->
-    <div class="kutucuk">
-      <h3>Tarih Seçimi</h3>
-      <input type="date" id="tarihSecimi" placeholder="Lütfen bir tarih seçin">
-    </div>
-
-    <!-- Saat Seçimi -->
-    <div class="kutucuk">
-      <h3>Saat Seçimi</h3>
-      <select id="saatSecimi">
-        <option value="">Lütfen saat seçiniz</option>
-      </select>
-    </div>
-
+  <div class="halisaha-secim">
+    <h3>Halısaha Seçin:</h3>
+    <div class="halisaha-item">arena77</div>
+    <div class="halisaha-item">efsane77</div>
+    <div class="halisaha-item">fatih</div>
+    <div class="halisaha-item">90+4</div>
+    <div class="halisaha-item">kaptan</div>
+    <div class="halisaha-item">la liga</div>
+    <div class="halisaha-item">öncü</div>
   </div>
 
-  <button class="ilerle" onclick="ilerle()">İlerle</button>
+  <div class="zaman-secim">
+    <h3>Tarih Seçin:</h3>
+    <input type="date" id="tarihSec" placeholder="Lütfen bir tarih seçin">
+
+    <h3 style="margin-top:20px;">Saat Seçin:</h3>
+    <select id="saatSec">
+      <option value="">Lütfen saat seçiniz</option>
+      ${[...Array(24)].map((_, i) => `<option value="${i.toString().padStart(2, '0')}:00">${i.toString().padStart(2, '0')}:00</option>`).join('')}
+    </select>
+  </div>
+
+  <button class="ilerle-btn" onclick="ilerle()">İlerle</button>
 
   <script>
-    // Halısaha Listesi
-    const halisahalar = ["arena77", "efsane77", "fatih", "90+4", "kaptan", "la liga", "öncü"];
-    const halisahaListesi = document.getElementById("halisahaListesi");
     let secilenHalisaha = null;
+    const halisahalar = document.querySelectorAll('.halisaha-item');
 
-    halisahalar.forEach((isim) => {
-      const btn = document.createElement("div");
-      btn.className = "halisaha-btn";
-      btn.textContent = isim;
-
-      btn.addEventListener("click", () => {
-        secilenHalisaha = isim;
-        document.querySelectorAll(".halisaha-btn").forEach(b => b.classList.remove("secili"));
-        btn.classList.add("secili");
+    halisahalar.forEach(item => {
+      item.addEventListener('click', () => {
+        halisahalar.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        secilenHalisaha = item.textContent;
       });
-
-      halisahaListesi.appendChild(btn);
     });
 
-    // Saat Seçimi Listesi
-    const saatSecimi = document.getElementById("saatSecimi");
-    for (let i = 1; i <= 24; i++) {
-      const saat = i.toString().padStart(2, '0') + ":00";
-      const opt = document.createElement("option");
-      opt.value = saat;
-      opt.textContent = saat;
-      saatSecimi.appendChild(opt);
-    }
-
     function ilerle() {
-      const tarih = document.getElementById("tarihSecimi").value;
-      const saat = document.getElementById("saatSecimi").value;
+      const tarih = document.getElementById("tarihSec").value;
+      const saat = document.getElementById("saatSec").value;
 
       if (!secilenHalisaha || !tarih || !saat) {
-        alert("Lütfen tüm seçimleri tamamlayın!");
+        alert("Lütfen tüm bilgileri doldurunuz.");
         return;
       }
 
-      // Gerçek uygulamada veri saklanabilir veya yönlendirme yapılabilir
-      alert("3. sayfaya geçiliyor...\nHalısaha: " + secilenHalisaha + "\nTarih: " + tarih + "\nSaat: " + saat);
-      // Örnek yönlendirme:
-      // window.location.href = "sayfa3.html";
+      localStorage.setItem("halisaha", secilenHalisaha);
+      localStorage.setItem("tarih", tarih);
+      localStorage.setItem("saat", saat);
+
+      window.location.href = "mac-ozet.html";
     }
   </script>
+
 </body>
 </html>
-
