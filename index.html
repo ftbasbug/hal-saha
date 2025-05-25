@@ -2,24 +2,123 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Halısaha Maçı</title>
+  <title>Halı Saha Maçı</title>
   <style>
-    /* Basit stil örneği */
     body {
       font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .takim-container {
+      display: flex;
+      gap: 50px;
+      margin-top: 30px;
+    }
+
+    .takim {
+      border: 2px solid #444;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+    }
+
+    .takim h2 {
+      margin-bottom: 10px;
+    }
+
+    .oyuncular {
+      min-height: 100px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .oyuncu-ekle {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
     }
   </style>
-  <script>
-    // Sayfa her yüklendiğinde çalışır
-    window.onload = function () {
-      // Tüm localStorage ve sessionStorage temizlenir
-      localStorage.clear();
-      sessionStorage.clear();
-    };
-  </script>
 </head>
 <body>
-  <h1>Hoşgeldiniz</h1>
-  <!-- Diğer sayfa içeriğiniz buraya -->
+  <h1>HOŞGELDİNİZ</h1>
+
+  <div class="takim-container">
+    <!-- TAKIM A -->
+    <div class="takim">
+      <h2>Takım A</h2>
+      <div class="oyuncular" id="takimAListesi">
+        <!-- Oyuncular burada listelenecek -->
+      </div>
+      <input type="text" id="takimAInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
+    </div>
+
+    <!-- TAKIM B -->
+    <div class="takim">
+      <h2>Takım B</h2>
+      <div class="oyuncular" id="takimBListesi">
+        <!-- Oyuncular burada listelenecek -->
+      </div>
+      <input type="text" id="takimBInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
+    </div>
+  </div>
+
+  <script>
+    function setupTakim(inputId, listId) {
+      const input = document.getElementById(inputId);
+      const listContainer = document.getElementById(listId);
+      let oyuncular = [];
+
+      function guncelleListe() {
+        listContainer.innerHTML = '';
+        const ul = document.createElement('ul');
+        oyuncular.forEach((isim, index) => {
+          const li = document.createElement('li');
+          li.textContent = `${index + 1}. ${isim}`;
+          ul.appendChild(li);
+        });
+        listContainer.appendChild(ul);
+      }
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          const girilen = input.value.trim();
+          if (girilen === '') return;
+
+          if (girilen.startsWith('-')) {
+            const silinecekIndex = parseInt(girilen.slice(1)) - 1;
+            if (!isNaN(silinecekIndex) && silinecekIndex >= 0 && silinecekIndex < oyuncular.length) {
+              oyuncular.splice(silinecekIndex, 1);
+              guncelleListe();
+            }
+          } else {
+            oyuncular.push(girilen);
+            guncelleListe();
+          }
+
+          input.value = '';
+        }
+      });
+    }
+
+    setupTakim('takimAInput', 'takimAListesi');
+    setupTakim('takimBInput', 'takimBListesi');
+  </script>
 </body>
 </html>
+
