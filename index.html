@@ -2,87 +2,64 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Halı Saha Takım Oluşturma</title>
+  <title>Maç Bilgileri</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 30px;
       position: relative;
     }
 
     h1 {
-      font-size: 36px;
-      font-weight: bold;
+      font-size: 28px;
+      margin-bottom: 20px;
     }
 
-    .takim-container {
+    .secenekler {
       display: flex;
-      gap: 40px;
-      margin-top: 30px;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 400px;
     }
 
-    .takim {
-      border: 2px solid #444;
-      padding: 20px;
+    .kutucuk {
+      border: 2px solid #ccc;
       border-radius: 10px;
-      width: 350px;
+      padding: 15px;
     }
 
-    .takim h2 {
-      margin-bottom: 10px;
-    }
-
-    .oyuncular {
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-
-    .oyuncu-satir {
+    .halisaha-listesi {
       display: flex;
-      align-items: center;
-      padding: 8px;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .oyuncu-satir:nth-child(even) {
-      background-color: #f0f0f0;
-    }
-
-    .oyuncu-satir:nth-child(odd) {
-      background-color: #dcdcdc;
-    }
-
-    .oyuncu-isim {
-      flex: 1;
-    }
-
-    .mevki-secimi {
-      display: flex;
-      gap: 4px;
-    }
-
-    .mevki-btn {
-      width: 28px;
-      height: 28px;
-      text-align: center;
-      line-height: 28px;
-      border: 1px solid #888;
+    .halisaha-btn {
+      padding: 10px;
+      border: 1px solid #999;
       cursor: pointer;
-      background-color: #fff;
+      border-radius: 6px;
+      background-color: #f5f5f5;
+    }
+
+    .halisaha-btn.secili {
+      background-color: #444;
+      color: white;
       font-weight: bold;
     }
 
-    .mevki-btn.secili {
-      background-color: #444;
-      color: #fff;
-    }
-
-    .oyuncu-ekle {
+    input[type="date"], select {
       width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
     }
 
-    /* İlerle Butonu */
+    input[type="date"]::placeholder {
+      color: #999;
+    }
+
     .ilerle {
       position: fixed;
       bottom: 30px;
@@ -99,96 +76,80 @@
   </style>
 </head>
 <body>
-  <h1>HOŞGELDİNİZ</h1>
 
-  <div class="takim-container">
-    <!-- TAKIM A -->
-    <div class="takim">
-      <h2>Takım A</h2>
-      <div class="oyuncular" id="takimAListesi"></div>
-      <input type="text" id="takimAInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
+  <h1>Maç Bilgilerini Seç</h1>
+
+  <div class="secenekler">
+
+    <!-- Halısaha Seçimi -->
+    <div class="kutucuk">
+      <h3>Halısaha Seçimi</h3>
+      <div class="halisaha-listesi" id="halisahaListesi">
+        <!-- JS ile eklenecek -->
+      </div>
     </div>
 
-    <!-- TAKIM B -->
-    <div class="takim">
-      <h2>Takım B</h2>
-      <div class="oyuncular" id="takimBListesi"></div>
-      <input type="text" id="takimBInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
+    <!-- Tarih Seçimi -->
+    <div class="kutucuk">
+      <h3>Tarih Seçimi</h3>
+      <input type="date" id="tarihSecimi" placeholder="Lütfen bir tarih seçin">
     </div>
+
+    <!-- Saat Seçimi -->
+    <div class="kutucuk">
+      <h3>Saat Seçimi</h3>
+      <select id="saatSecimi">
+        <option value="">Lütfen saat seçiniz</option>
+      </select>
+    </div>
+
   </div>
 
   <button class="ilerle" onclick="ilerle()">İlerle</button>
 
   <script>
-    function setupTakim(inputId, listId) {
-      const input = document.getElementById(inputId);
-      const listContainer = document.getElementById(listId);
-      let oyuncular = [];
+    // Halısaha Listesi
+    const halisahalar = ["arena77", "efsane77", "fatih", "90+4", "kaptan", "la liga", "öncü"];
+    const halisahaListesi = document.getElementById("halisahaListesi");
+    let secilenHalisaha = null;
 
-      function guncelleListe() {
-        listContainer.innerHTML = '';
-        oyuncular.forEach((isim, index) => {
-          const satir = document.createElement('div');
-          satir.className = 'oyuncu-satir';
+    halisahalar.forEach((isim) => {
+      const btn = document.createElement("div");
+      btn.className = "halisaha-btn";
+      btn.textContent = isim;
 
-          const isimEl = document.createElement('div');
-          isimEl.className = 'oyuncu-isim';
-          isimEl.textContent = `${index + 1}. ${isim.isim}`;
-          satir.appendChild(isimEl);
-
-          const mevkiDiv = document.createElement('div');
-          mevkiDiv.className = 'mevki-secimi';
-
-          ['K', 'D', 'O', 'F'].forEach((harf) => {
-            const btn = document.createElement('div');
-            btn.className = 'mevki-btn';
-            btn.textContent = harf;
-
-            if (isim.mevki === harf) {
-              btn.classList.add('secili');
-            }
-
-            btn.addEventListener('click', () => {
-              isim.mevki = harf;
-              guncelleListe(); // tekrar çiz
-            });
-
-            mevkiDiv.appendChild(btn);
-          });
-
-          satir.appendChild(mevkiDiv);
-          listContainer.appendChild(satir);
-        });
-      }
-
-      input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-          const girilen = input.value.trim();
-          if (girilen === '') return;
-
-          if (girilen.startsWith('-')) {
-            const silIndex = parseInt(girilen.slice(1)) - 1;
-            if (!isNaN(silIndex) && silIndex >= 0 && silIndex < oyuncular.length) {
-              oyuncular.splice(silIndex, 1);
-              guncelleListe();
-            }
-          } else {
-            oyuncular.push({ isim: girilen, mevki: null });
-            guncelleListe();
-          }
-
-          input.value = '';
-        }
+      btn.addEventListener("click", () => {
+        secilenHalisaha = isim;
+        document.querySelectorAll(".halisaha-btn").forEach(b => b.classList.remove("secili"));
+        btn.classList.add("secili");
       });
+
+      halisahaListesi.appendChild(btn);
+    });
+
+    // Saat Seçimi Listesi
+    const saatSecimi = document.getElementById("saatSecimi");
+    for (let i = 1; i <= 24; i++) {
+      const saat = i.toString().padStart(2, '0') + ":00";
+      const opt = document.createElement("option");
+      opt.value = saat;
+      opt.textContent = saat;
+      saatSecimi.appendChild(opt);
     }
 
-    setupTakim('takimAInput', 'takimAListesi');
-    setupTakim('takimBInput', 'takimBListesi');
-
     function ilerle() {
-      // Gerçek projede buraya yönlendirme veya veri saklama gelecek
-      alert("2. sayfaya geçiliyor...");
-      // window.location.href = "sayfa2.html"; gibi bir yönlendirme yapılabilir
+      const tarih = document.getElementById("tarihSecimi").value;
+      const saat = document.getElementById("saatSecimi").value;
+
+      if (!secilenHalisaha || !tarih || !saat) {
+        alert("Lütfen tüm seçimleri tamamlayın!");
+        return;
+      }
+
+      // Gerçek uygulamada veri saklanabilir veya yönlendirme yapılabilir
+      alert("3. sayfaya geçiliyor...\nHalısaha: " + secilenHalisaha + "\nTarih: " + tarih + "\nSaat: " + saat);
+      // Örnek yönlendirme:
+      // window.location.href = "sayfa3.html";
     }
   </script>
 </body>
