@@ -47,6 +47,36 @@
       cursor: pointer;
       float: right;
     }
+
+    .saat-listesi {
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      margin-top: 10px;
+    }
+
+    .saat-item {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    .saat-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .saat-goster {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .saat-secili {
+      background-color: #333;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -69,10 +99,8 @@
     <input type="date" id="tarihSec" placeholder="Lütfen bir tarih seçin">
 
     <h3 style="margin-top:20px;">Saat Seçin:</h3>
-    <select id="saatSec">
-      <option value="">Lütfen saat seçiniz</option>
-      ${[...Array(24)].map((_, i) => `<option value="${i.toString().padStart(2, '0')}:00">${i.toString().padStart(2, '0')}:00</option>`).join('')}
-    </select>
+    <div id="saatGoster" class="saat-goster">Lütfen saat seçiniz</div>
+    <div id="saatListesi" class="saat-listesi"></div>
   </div>
 
   <button class="ilerle-btn" onclick="ilerle()">İlerle</button>
@@ -89,18 +117,40 @@
       });
     });
 
+    const saatGoster = document.getElementById("saatGoster");
+    const saatListesi = document.getElementById("saatListesi");
+    let secilenSaat = "";
+
+    saatGoster.addEventListener("click", () => {
+      saatListesi.style.display = saatListesi.style.display === "block" ? "none" : "block";
+    });
+
+    for (let i = 1; i <= 24; i++) {
+      const saat = i.toString().padStart(2, "0") + ":00";
+      const div = document.createElement("div");
+      div.className = "saat-item";
+      div.textContent = saat;
+
+      div.addEventListener("click", () => {
+        secilenSaat = saat;
+        saatGoster.textContent = saat;
+        saatListesi.style.display = "none";
+      });
+
+      saatListesi.appendChild(div);
+    }
+
     function ilerle() {
       const tarih = document.getElementById("tarihSec").value;
-      const saat = document.getElementById("saatSec").value;
 
-      if (!secilenHalisaha || !tarih || !saat) {
+      if (!secilenHalisaha || !tarih || !secilenSaat) {
         alert("Lütfen tüm bilgileri doldurunuz.");
         return;
       }
 
       localStorage.setItem("halisaha", secilenHalisaha);
       localStorage.setItem("tarih", tarih);
-      localStorage.setItem("saat", saat);
+      localStorage.setItem("saat", secilenSaat);
 
       window.location.href = "mac-ozet.html";
     }
