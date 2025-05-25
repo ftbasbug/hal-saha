@@ -1,1 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Maç Özeti</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      font-size: 24px;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .oyuncu-liste {
+      margin-top: 10px;
+      padding-left: 15px;
+    }
+
+    .oyuncu-liste li {
+      margin-bottom: 5px;
+    }
+
+    .veri-kutu {
+      margin-top: 20px;
+      font-size: 18px;
+      padding: 10px;
+      background-color: #f2f2f2;
+      border-left: 4px solid #444;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SONUÇ SAYFASI</h1>
+
+  <h2>Takım A Oyuncuları</h2>
+  <ul class="oyuncu-liste" id="takimA"></ul>
+
+  <h2>Takım B Oyuncuları</h2>
+  <ul class="oyuncu-liste" id="takimB"></ul>
+
+  <h2>Maç Bilgileri</h2>
+  <div class="veri-kutu" id="macBilgileri"></div>
+
+  <script>
+    // Verileri al
+    const takimA = JSON.parse(localStorage.getItem('takimA')) || [];
+    const takimB = JSON.parse(localStorage.getItem('takimB')) || [];
+    const halisaha = localStorage.getItem('halisaha') || "Seçilmedi";
+    const tarih = localStorage.getItem('tarih') || "Seçilmedi";
+    const saat = localStorage.getItem('saat') || "Seçilmedi";
+
+    // Listele
+    function listele(id, takim) {
+      const container = document.getElementById(id);
+      takim.forEach((oyuncu, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${i + 1}. ${oyuncu.isim} - ${oyuncu.mevki || 'Belirtilmedi'}`;
+        container.appendChild(li);
+      });
+    }
+
+    listele("takimA", takimA);
+    listele("takimB", takimB);
+
+    // Maç bilgileri
+    const bilgiDiv = document.getElementById("macBilgileri");
+    bilgiDiv.innerHTML = `
+      <strong>Halısaha:</strong> ${halisaha} <br>
+      <strong>Tarih:</strong> ${tarih} <br>
+      <strong>Saat:</strong> ${saat}
+    `;
+  </script>
+
+</body>
+</html>
 
