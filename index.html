@@ -2,22 +2,22 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Halı Saha Maçı</title>
+  <title>Halı Saha Takım Oluşturma</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      position: relative;
     }
 
     h1 {
       font-size: 36px;
       font-weight: bold;
-      margin-bottom: 10px;
     }
 
     .takim-container {
       display: flex;
-      gap: 50px;
+      gap: 40px;
       margin-top: 30px;
     }
 
@@ -25,7 +25,7 @@
       border: 2px solid #444;
       padding: 20px;
       border-radius: 10px;
-      width: 300px;
+      width: 350px;
     }
 
     .takim h2 {
@@ -33,10 +33,47 @@
     }
 
     .oyuncular {
-      min-height: 100px;
       border: 1px solid #ccc;
-      padding: 10px;
       margin-bottom: 10px;
+    }
+
+    .oyuncu-satir {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+    }
+
+    .oyuncu-satir:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+
+    .oyuncu-satir:nth-child(odd) {
+      background-color: #dcdcdc;
+    }
+
+    .oyuncu-isim {
+      flex: 1;
+    }
+
+    .mevki-secimi {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mevki-btn {
+      width: 28px;
+      height: 28px;
+      text-align: center;
+      line-height: 28px;
+      border: 1px solid #888;
+      cursor: pointer;
+      background-color: #fff;
+      font-weight: bold;
+    }
+
+    .mevki-btn.secili {
+      background-color: #444;
+      color: #fff;
     }
 
     .oyuncu-ekle {
@@ -45,13 +82,19 @@
       box-sizing: border-box;
     }
 
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    li {
-      margin-bottom: 5px;
+    /* İlerle Butonu */
+    .ilerle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -62,21 +105,19 @@
     <!-- TAKIM A -->
     <div class="takim">
       <h2>Takım A</h2>
-      <div class="oyuncular" id="takimAListesi">
-        <!-- Oyuncular burada listelenecek -->
-      </div>
+      <div class="oyuncular" id="takimAListesi"></div>
       <input type="text" id="takimAInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
     </div>
 
     <!-- TAKIM B -->
     <div class="takim">
       <h2>Takım B</h2>
-      <div class="oyuncular" id="takimBListesi">
-        <!-- Oyuncular burada listelenecek -->
-      </div>
+      <div class="oyuncular" id="takimBListesi"></div>
       <input type="text" id="takimBInput" class="oyuncu-ekle" placeholder="Oyuncu ekle/sil">
     </div>
   </div>
+
+  <button class="ilerle" onclick="ilerle()">İlerle</button>
 
   <script>
     function setupTakim(inputId, listId) {
@@ -86,28 +127,53 @@
 
       function guncelleListe() {
         listContainer.innerHTML = '';
-        const ul = document.createElement('ul');
         oyuncular.forEach((isim, index) => {
-          const li = document.createElement('li');
-          li.textContent = `${index + 1}. ${isim}`;
-          ul.appendChild(li);
+          const satir = document.createElement('div');
+          satir.className = 'oyuncu-satir';
+
+          const isimEl = document.createElement('div');
+          isimEl.className = 'oyuncu-isim';
+          isimEl.textContent = `${index + 1}. ${isim.isim}`;
+          satir.appendChild(isimEl);
+
+          const mevkiDiv = document.createElement('div');
+          mevkiDiv.className = 'mevki-secimi';
+
+          ['K', 'D', 'O', 'F'].forEach((harf) => {
+            const btn = document.createElement('div');
+            btn.className = 'mevki-btn';
+            btn.textContent = harf;
+
+            if (isim.mevki === harf) {
+              btn.classList.add('secili');
+            }
+
+            btn.addEventListener('click', () => {
+              isim.mevki = harf;
+              guncelleListe(); // tekrar çiz
+            });
+
+            mevkiDiv.appendChild(btn);
+          });
+
+          satir.appendChild(mevkiDiv);
+          listContainer.appendChild(satir);
         });
-        listContainer.appendChild(ul);
       }
 
-      input.addEventListener('keydown', function(e) {
+      input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
           const girilen = input.value.trim();
           if (girilen === '') return;
 
           if (girilen.startsWith('-')) {
-            const silinecekIndex = parseInt(girilen.slice(1)) - 1;
-            if (!isNaN(silinecekIndex) && silinecekIndex >= 0 && silinecekIndex < oyuncular.length) {
-              oyuncular.splice(silinecekIndex, 1);
+            const silIndex = parseInt(girilen.slice(1)) - 1;
+            if (!isNaN(silIndex) && silIndex >= 0 && silIndex < oyuncular.length) {
+              oyuncular.splice(silIndex, 1);
               guncelleListe();
             }
           } else {
-            oyuncular.push(girilen);
+            oyuncular.push({ isim: girilen, mevki: null });
             guncelleListe();
           }
 
@@ -118,7 +184,12 @@
 
     setupTakim('takimAInput', 'takimAListesi');
     setupTakim('takimBInput', 'takimBListesi');
+
+    function ilerle() {
+      // Gerçek projede buraya yönlendirme veya veri saklama gelecek
+      alert("2. sayfaya geçiliyor...");
+      // window.location.href = "sayfa2.html"; gibi bir yönlendirme yapılabilir
+    }
   </script>
 </body>
 </html>
-
